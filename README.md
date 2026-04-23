@@ -3,14 +3,14 @@
 A premium luxury shopping storefront for curated watches, fashion, shoes, fragrances, accessories, and exclusive bundles.
 
 ## Primary Entry
-- Open [index.html](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/index.html) directly.
+- Open [index.html](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/store/index.html) directly.
 - Additional pages:
-[collections.html](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/collections.html),
-[product.html](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/product.html),
-[cart.html](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/cart.html),
-[about.html](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/about.html)
-- The static storefront now lives at the repo root for direct hosting.
-- Real images should go in `../assets/images/`. The site is already wired to use those files and falls back to neutral placeholders until you add them.
+[collections.html](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/store/collections.html),
+[product.html](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/store/product.html),
+[cart.html](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/store/cart.html),
+[about.html](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/store/about.html)
+- The static storefront lives in the actual git repo root so GitHub Pages can publish it.
+- Real images should go in `assets/images/`. The site is already wired to use those files and falls back to neutral placeholders until you add them.
 
 ## Stack Used
 - Plain HTML
@@ -18,27 +18,28 @@ A premium luxury shopping storefront for curated watches, fashion, shoes, fragra
 - Vanilla JavaScript
 - Local SVG artwork assets
 - Google Fonts for typography
+- Existing Next.js / React / TypeScript (`.tsx`) source remains in `app/`, `components/`, and `lib/`, but browsers load the static HTML/CSS/JS storefront directly.
 
 ## How To Run Locally
-- Open `../index.html` directly in the browser.
+- Open `index.html` directly in the browser.
 - Or serve the folder if you want local links under `http://` instead of `file://`.
 
 ## Folder Structure
 ```text
-../assets/
+assets/
   app.js
   styles.css
   images/
   placeholders/
   media/
-../404/
+404/
   index.html
-../404.html
-../about.html
-../cart.html
-../collections.html
-../index.html
-../product.html
+404.html
+about.html
+cart.html
+collections.html
+index.html
+product.html
 memory.md
 README.md
 ```

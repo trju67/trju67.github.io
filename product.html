@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product | Atelier Archive</title>
+    <meta name="description" content="Premium product detail page for Atelier Archive." />
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-page="product">
+    <div class="site-loader" data-loader>
+      <div class="site-loader__inner">
+        <p class="site-loader__brand">Atelier Archive</p>
+        <p class="site-loader__label">Curated luxury storefront</p>
+        <div class="site-loader__bar"><span></span></div>
+      </div>
+    </div>
+
+    <div class="cursor-shell" data-cursor-shell>
+      <div class="cursor-dot"><span></span></div>
+    </div>
+
+    <header class="site-header">
+      <div class="shell">
+        <div class="site-header__bar">
+          <a class="brandmark clickable" href="index.html" data-cursor-label="Home">Atelier Archive</a>
+          <nav class="site-nav">
+            <a href="index.html" data-nav="home" data-cursor-label="Open">Home</a>
+            <a href="collections.html?category=watches" data-cursor-label="Browse">Watches</a>
+            <a href="collections.html?category=clothing" data-cursor-label="Browse">Clothing</a>
+            <a href="collections.html?category=shoes" data-cursor-label="Browse">Shoes</a>
+            <a href="collections.html?category=fragrances" data-cursor-label="Browse">Fragrances</a>
+            <a href="collections.html?category=accessories" data-cursor-label="Browse">Accessories</a>
+            <a href="about.html" data-nav="about" data-cursor-label="Open">About</a>
+          </nav>
+          <div class="site-header__actions">
+            <a class="mini-chip clickable" href="collections.html" data-cursor-label="Search">Search</a>
+            <a class="count-pill clickable" href="cart.html" data-cursor-label="Bag">
+              Bag <span data-cart-count>0</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="page" data-product-page>
+      <section class="section">
+        <div class="shell product-layout">
+          <div>
+            <p class="eyebrow" data-product-kicker data-reveal></p>
+            <div class="gallery-main" data-product-main data-tilt data-reveal>
+              <img src="" alt="" data-product-image />
+            </div>
+            <div class="thumb-grid" data-product-thumbs></div>
+          </div>
+
+          <aside class="product-panel">
+            <p class="meta-kicker" data-product-brand data-reveal></p>
+            <h1 class="product-title" data-product-title data-reveal></h1>
+            <p class="product-panel__line" data-product-line data-reveal></p>
+            <div class="price-row" data-reveal>
+              <strong data-product-price></strong>
+              <span data-product-compare hidden></span>
+            </div>
+            <p class="detail-copy" data-product-description data-reveal></p>
+
+            <div class="purchase-panel" data-reveal>
+              <div class="pill-row" data-product-tags></div>
+              <div class="toolbar__row">
+                <span class="meta-kicker" style="margin: 0">Quantity</span>
+                <div class="qty">
+                  <button class="clickable" type="button" data-qty-minus data-cursor-label="Down">−</button>
+                  <span data-qty-value>1</span>
+                  <button class="clickable" type="button" data-qty-plus data-cursor-label="Up">+</button>
+                </div>
+              </div>
+              <button class="button button--primary clickable" type="button" data-add-to-cart data-cursor-label="Add">
+                Add to bag
+              </button>
+            </div>
+
+            <div class="detail-list" data-product-details></div>
+
+            <div class="triptych" data-reveal>
+              <div>
+                <h4>Authenticity</h4>
+                <p>Verified before release, documented in-house, and presented with clear sourcing notes.</p>
+              </div>
+              <div>
+                <h4>Shipping</h4>
+                <p>Insured dispatch with presentation-grade packaging and tracked delivery.</p>
+              </div>
+              <div>
+                <h4>Returns</h4>
+                <p>Transparent review period for qualifying orders, without the fine-print maze.</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="shell">
+          <div class="section-head" data-reveal>
+            <div>
+              <p class="eyebrow">Related pieces</p>
+              <h2 class="section-title">Continue the edit.</h2>
+              <p class="section-copy">A short rail of related pieces chosen to keep the browse focused and intentional.</p>
+            </div>
+          </div>
+          <div class="product-grid product-grid--three" data-render="related"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="shell">
+        <div class="footer__card" data-reveal>
+          <div>
+            <p class="footer__title">Atelier Archive</p>
+            <p class="footer__copy">
+              Product pages stay image-first, tactile, and clear around the actual purchase decision.
+            </p>
+          </div>
+          <div class="footer__links">
+            <a href="index.html" data-cursor-label="Open">Home</a>
+            <a href="collections.html" data-cursor-label="Browse">Collections</a>
+            <a href="cart.html" data-cursor-label="Bag">Bag</a>
+            <a href="about.html" data-cursor-label="Open">About</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/app.js"></script>
+  </body>
+</html>
