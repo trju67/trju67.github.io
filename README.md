@@ -30,6 +30,9 @@ assets/
   images/
   placeholders/
   media/
+404/
+  index.html
+404.html
 about.html
 cart.html
 collections.html
@@ -57,6 +60,7 @@ README.md
 - `product.html`: dynamic product detail page driven by query string data.
 - `cart.html`: local-storage bag review and quantity editing.
 - `about.html`: brand point of view and trust messaging.
+- `404.html` and `404/index.html`: static not-found pages for direct hosting and folder-based hosting.
 
 ## Notes On Performance And Accessibility
 - Motion is restrained and reduced automatically for users with reduced-motion preferences.
