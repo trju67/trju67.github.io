@@ -400,6 +400,8 @@
   ];
 
   const CART_KEY = "atelier-archive-static-cart";
+  const SHOE_MOTION_IMAGE = "assets/images/designarena-shoe-cutout.png";
+  const SHOE_MOTION_VIDEO = "assets/designarena_video_gkt5c6pv.mp4";
 
   function qs(selector, scope) {
     return (scope || document).querySelector(selector);
@@ -421,7 +423,7 @@
     try {
       const parsed = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
       return Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
+    } catch {
       return [];
     }
   }
@@ -485,6 +487,60 @@
             </div>
           </div>
         </a>
+      </article>
+    `;
+  }
+
+  function createShoeMotionCard() {
+    return `
+      <article class="product-card product-card--video" data-reveal>
+        <button class="product-card__link product-card__link--button clickable" type="button" data-design-arena-trigger data-cursor-label="Play">
+          <div class="product-card__media product-card__media--shoe-video" data-tilt>
+            <img src="${SHOE_MOTION_IMAGE}" alt="Uploaded shoe video first frame with the background removed" />
+          </div>
+          <div class="product-card__copy">
+            <div class="product-card__top">
+              <span class="badge">Uploaded video</span>
+              <span class="badge">Interactive</span>
+            </div>
+            <p class="product-card__brand">Shoe section</p>
+            <div class="product-card__row">
+              <div>
+                <h3 class="product-card__title">Shoe motion preview</h3>
+                <p class="product-card__line">Click this one tile to open the shoe video.</p>
+              </div>
+            </div>
+            <p class="product-card__note">This is the only shoe tile with an image right now.</p>
+          </div>
+        </button>
+      </article>
+    `;
+  }
+
+  function createProductPlaceholderCard(product) {
+    return `
+      <article class="product-card product-card--placeholder" data-reveal>
+        <div class="product-card__media product-card__placeholder">
+          <div>
+            <strong>Image later</strong>
+            <span>I’ll add the image later for this shoe tile.</span>
+          </div>
+        </div>
+        <div class="product-card__copy">
+          <div class="product-card__top">
+            <span class="badge">${product.badge}</span>
+            <span class="badge">${product.availability}</span>
+          </div>
+          <p class="product-card__brand">${product.brand}</p>
+          <div class="product-card__row">
+            <div>
+              <h3 class="product-card__title">${product.name}</h3>
+              <p class="product-card__line">${product.line}</p>
+            </div>
+            <strong class="price">${money(product.price)}</strong>
+          </div>
+          <p class="product-card__note">I’ll add the image later.</p>
+        </div>
       </article>
     `;
   }
@@ -560,7 +616,9 @@
         });
 
       mount.innerHTML = result.length
-        ? result.map(createProductCard).join("")
+        ? activeCategory === "shoes"
+          ? [createShoeMotionCard(), ...result.map(createProductPlaceholderCard)].join("")
+          : result.map(createProductCard).join("")
         : `
             <div class="empty-state" data-reveal>
               <h2>Nothing matched that edit.</h2>
@@ -569,9 +627,24 @@
           `;
 
       const count = qs("[data-collection-count]");
-      if (count) count.textContent = `${result.length} curated results`;
+      if (count) {
+        count.textContent =
+          activeCategory === "shoes" && result.length
+            ? `${result.length + 1} curated results`
+            : `${result.length} curated results`;
+      }
+
+      const note = qs("[data-collection-note]");
+      if (note) {
+        note.textContent =
+          activeCategory === "shoes" && result.length
+            ? "Only one shoe tile has the image right now. I’ll add the rest later."
+            : "Image-first luxury browse";
+      }
+
       revealVisible();
       setupTilt();
+      setupDesignArena();
     }
 
     filterButtons.forEach((button) => {
@@ -999,6 +1072,347 @@
     });
   }
 
+  function setupDesignArena() {
+    let overlay = qs("[data-design-arena-overlay]");
+
+    if (!overlay) {
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = `
+        <div class="design-arena-overlay" data-design-arena-overlay hidden aria-hidden="true">
+          <div class="design-arena-overlay__scroll" data-design-arena-scroll>
+            <button
+              class="design-arena-overlay__close clickable"
+              type="button"
+              data-design-arena-close
+              data-cursor-label="Close"
+              aria-label="Close shoe scroll scene"
+            >
+              &times;
+            </button>
+
+            <div class="design-arena-scene" data-design-arena-scene>
+              <div class="design-arena-scene__sticky">
+                <div class="design-arena-scene__wash"></div>
+                <div class="design-arena-scene__glow"></div>
+
+                <div class="design-arena-media" data-design-arena-media>
+                  <div class="design-arena-media__shell" data-design-arena-surface>
+                    <img
+                      class="design-arena-media__fallback"
+                      data-design-arena-fallback
+                      src="${SHOE_MOTION_IMAGE}"
+                      alt="Isolated shoe frame"
+                    />
+                    <canvas class="design-arena-media__canvas" data-design-arena-canvas></canvas>
+                  </div>
+                </div>
+
+                <div class="design-arena-copy" data-design-arena-copy>
+                  <p class="design-arena-copy__eyebrow">Choose section</p>
+                  <h3 class="design-arena-copy__title">Scroll down to play. Scroll up to reverse.</h3>
+                  <p class="design-arena-copy__text">
+                    The shoe starts large in the center, stays locked to the original frame, then
+                    slides into the right half while the explanation settles on the left.
+                  </p>
+                  <div class="design-arena-steps">
+                    <article class="design-arena-step">
+                      <strong>1. Click</strong>
+                      <span>The box opens with the isolated first shoe frame.</span>
+                    </article>
+                    <article class="design-arena-step">
+                      <strong>2. Shift</strong>
+                      <span>The opening scroll moves the shoe down and into the right side.</span>
+                    </article>
+                    <article class="design-arena-step">
+                      <strong>3. Scrub</strong>
+                      <span>Scrolling down advances the video, and scrolling up rewinds it.</span>
+                    </article>
+                  </div>
+                </div>
+
+                <div class="design-arena-prompt" data-design-arena-prompt>
+                  Scroll to shift, then scrub the shoe video
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <video
+            class="design-arena-video"
+            data-design-arena-video
+            muted
+            playsinline
+            preload="auto"
+            src="${SHOE_MOTION_VIDEO}"
+          ></video>
+        </div>
+      `;
+      document.body.appendChild(wrapper.firstElementChild);
+      overlay = qs("[data-design-arena-overlay]");
+    }
+
+    const scrollShell = qs("[data-design-arena-scroll]", overlay);
+    const scene = qs("[data-design-arena-scene]", overlay);
+    const closeButton = qs("[data-design-arena-close]", overlay);
+    const video = qs("[data-design-arena-video]", overlay);
+    const surface = qs("[data-design-arena-surface]", overlay);
+    const canvas = qs("[data-design-arena-canvas]", overlay);
+    const fallbackImage = qs("[data-design-arena-fallback]", overlay);
+    const triggers = qsa("[data-design-arena-trigger]");
+
+    if (!overlay || !scrollShell || !scene || !closeButton || !video || !surface || !canvas || !fallbackImage) {
+      return;
+    }
+
+    let duration = 0;
+    let isOpen = false;
+    let syncFrame = 0;
+    let drawFrame = 0;
+    let closeTimer = 0;
+
+    function clamp(value, min = 0, max = 1) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function easeOutCubic(value) {
+      return 1 - (1 - value) ** 3;
+    }
+
+    function mix(start, end, amount) {
+      return start + (end - start) * amount;
+    }
+
+    function applySceneState(progress, moveProgress, textProgress) {
+      const compact = window.innerWidth <= 920;
+      const shiftX = compact ? 0 : mix(0, 30, moveProgress);
+      const shiftY = mix(0, compact ? 10 : 8, moveProgress);
+      const scale = mix(1, compact ? 0.92 : 0.62, moveProgress);
+
+      overlay.style.setProperty("--arena-x", `${shiftX}vw`);
+      overlay.style.setProperty("--arena-y", `${shiftY}vh`);
+      overlay.style.setProperty("--arena-scale", scale.toFixed(4));
+      overlay.style.setProperty("--arena-copy-opacity", mix(0, 1, textProgress).toFixed(4));
+      overlay.style.setProperty("--arena-copy-x", `${compact ? 0 : mix(-44, 0, textProgress)}px`);
+      overlay.style.setProperty("--arena-copy-y", `${mix(compact ? 38 : 28, 0, textProgress)}px`);
+      overlay.style.setProperty("--arena-prompt-opacity", mix(1, 0, clamp(progress / 0.16)).toFixed(4));
+      overlay.style.setProperty("--arena-prompt-y", `${mix(0, 12, clamp(progress / 0.16))}px`);
+      overlay.style.setProperty("--arena-glow-opacity", mix(0.22, 0.52, textProgress).toFixed(4));
+    }
+
+    function renderProcessedFrame() {
+      drawFrame = 0;
+
+      if (!isOpen || video.readyState < 2) {
+        return;
+      }
+
+      const rect = surface.getBoundingClientRect();
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+      const width = Math.max(1, Math.round(rect.width * pixelRatio));
+      const height = Math.max(1, Math.round(rect.height * pixelRatio));
+
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+
+      if (!context) {
+        return;
+      }
+
+      context.clearRect(0, 0, width, height);
+      context.drawImage(video, 0, 0, width, height);
+
+      const frame = context.getImageData(0, 0, width, height);
+      const { data } = frame;
+
+      for (let index = 0; index < data.length; index += 4) {
+        const red = data[index];
+        const green = data[index + 1];
+        const blue = data[index + 2];
+        const maxChannel = Math.max(red, green, blue);
+        const minChannel = Math.min(red, green, blue);
+        const luma = red * 0.2126 + green * 0.7152 + blue * 0.0722;
+        const isNeutralPixel = maxChannel - minChannel < 34;
+
+        let alpha = 1;
+
+        if (isNeutralPixel) {
+          alpha = clamp((244 - luma) / 28);
+
+          if (luma < 226) {
+            alpha = 1;
+          }
+        }
+
+        if (!isNeutralPixel && luma > 238) {
+          alpha = Math.max(alpha, 0.88);
+        }
+
+        if (alpha <= 0.02) {
+          data[index] = 0;
+          data[index + 1] = 0;
+          data[index + 2] = 0;
+          data[index + 3] = 0;
+          continue;
+        }
+
+        const inverseAlpha = 1 - alpha;
+        data[index] = clamp(Math.round((red - 255 * inverseAlpha) / alpha), 0, 255);
+        data[index + 1] = clamp(Math.round((green - 255 * inverseAlpha) / alpha), 0, 255);
+        data[index + 2] = clamp(Math.round((blue - 255 * inverseAlpha) / alpha), 0, 255);
+        data[index + 3] = Math.round(alpha * 255);
+      }
+
+      context.putImageData(frame, 0, 0);
+      canvas.classList.add("is-visible");
+      fallbackImage.classList.add("is-hidden");
+    }
+
+    function queueCanvasRender() {
+      if (drawFrame) {
+        return;
+      }
+
+      drawFrame = window.requestAnimationFrame(renderProcessedFrame);
+    }
+
+    function syncScene() {
+      syncFrame = 0;
+
+      if (!isOpen) {
+        return;
+      }
+
+      const availableScroll = Math.max(scene.offsetHeight - scrollShell.clientHeight, 1);
+      const progress = clamp((scrollShell.scrollTop - scene.offsetTop) / availableScroll);
+      const moveProgress = easeOutCubic(clamp(progress / 0.34));
+      const scrubProgress = easeOutCubic(clamp((progress - 0.34) / 0.66));
+      const textProgress = easeOutCubic(clamp((progress - 0.1) / 0.26));
+
+      applySceneState(progress, moveProgress, textProgress);
+
+      if (video.readyState < 2 || !duration) {
+        return;
+      }
+
+      const safeDuration = Math.max(duration - 0.04, 0);
+      const nextTime = scrubProgress * safeDuration;
+
+      if (Math.abs(video.currentTime - nextTime) > 0.02) {
+        video.currentTime = nextTime;
+        return;
+      }
+
+      queueCanvasRender();
+    }
+
+    function queueSync() {
+      if (syncFrame) {
+        return;
+      }
+
+      syncFrame = window.requestAnimationFrame(syncScene);
+    }
+
+    function openOverlay() {
+      if (isOpen) {
+        return;
+      }
+
+      window.clearTimeout(closeTimer);
+      isOpen = true;
+      overlay.hidden = false;
+      overlay.setAttribute("aria-hidden", "false");
+      document.body.classList.add("design-arena-open");
+      canvas.classList.remove("is-visible");
+      fallbackImage.classList.remove("is-hidden");
+      applySceneState(0, 0, 0);
+
+      if (video.readyState >= 2) {
+        video.pause();
+        video.currentTime = 0;
+      }
+
+      scrollShell.scrollTop = 0;
+
+      window.requestAnimationFrame(() => {
+        overlay.classList.add("is-active");
+        queueCanvasRender();
+        queueSync();
+      });
+    }
+
+    function closeOverlay() {
+      if (!isOpen) {
+        return;
+      }
+
+      isOpen = false;
+      overlay.classList.remove("is-active");
+      overlay.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("design-arena-open");
+
+      closeTimer = window.setTimeout(() => {
+        if (!isOpen) {
+          overlay.hidden = true;
+        }
+      }, 360);
+    }
+
+    triggers.forEach((trigger) => {
+      if (trigger.dataset.designArenaBound) {
+        return;
+      }
+
+      trigger.dataset.designArenaBound = "1";
+      trigger.addEventListener("click", openOverlay);
+    });
+
+    if (!closeButton.dataset.designArenaBound) {
+      closeButton.dataset.designArenaBound = "1";
+      closeButton.addEventListener("click", closeOverlay);
+    }
+
+    if (!overlay.dataset.designArenaBound) {
+      overlay.dataset.designArenaBound = "1";
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeOverlay();
+        }
+      });
+
+      scrollShell.addEventListener("scroll", queueSync, { passive: true });
+      window.addEventListener("resize", queueSync);
+
+      video.addEventListener("loadedmetadata", () => {
+        duration = video.duration || 0;
+
+        if (video.videoWidth && video.videoHeight) {
+          surface.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
+        }
+
+        queueSync();
+      });
+
+      video.addEventListener("loadeddata", () => {
+        duration = video.duration || 0;
+
+        if (video.videoWidth && video.videoHeight) {
+          surface.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
+        }
+
+        queueCanvasRender();
+        queueSync();
+      });
+
+      video.addEventListener("seeked", queueCanvasRender);
+    }
+  }
+
   function markActiveNav() {
     const page = document.body.dataset.page;
     qsa("[data-nav]").forEach((link) => {
@@ -1019,6 +1433,7 @@
     revealVisible();
     setupParallax();
     setupTilt();
+    setupDesignArena();
     setupImageFallbacks();
   });
 })();
