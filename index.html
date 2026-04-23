@@ -93,18 +93,109 @@
           </div>
 
           <div class="hero-stage">
-            <div class="stage-card stage-card--watch" data-tilt data-parallax="18">
-              <img src="assets/images/hero-watch.jpg" alt="Premium watch campaign image" data-fallback="assets/placeholders/portrait.svg" />
-            </div>
-            <div class="stage-card stage-card--coat" data-tilt data-parallax="10">
-              <img src="assets/images/hero-clothing.jpg" alt="Luxury clothing campaign image" data-fallback="assets/placeholders/portrait.svg" />
-            </div>
-            <div class="stage-card stage-card--fragrance" data-tilt data-parallax="14">
-              <img src="assets/images/hero-fragrance.jpg" alt="Collector fragrance campaign image" data-fallback="assets/placeholders/portrait.svg" />
-            </div>
+            <button
+              class="design-arena-card clickable"
+              type="button"
+              data-design-arena-trigger
+              data-cursor-label="Open"
+            >
+              <div class="design-arena-card__background"></div>
+              <div class="design-arena-card__sheen"></div>
+              <div class="design-arena-card__shoe">
+                <img
+                  src="assets/images/designarena-shoe-cutout.png"
+                  alt="First frame of the shoe video with the background removed"
+                />
+              </div>
+              <div class="design-arena-card__content">
+                <div class="design-arena-card__topline">
+                  <span>Choose Section</span>
+                  <span class="design-arena-card__dot"></span>
+                  <span>Shoe Motion</span>
+                </div>
+                <div class="design-arena-card__copy">
+                  <p class="design-arena-card__eyebrow">First frame, background removed</p>
+                  <h2 class="design-arena-card__title">Click the shoe, then steer the video with scroll.</h2>
+                  <p class="design-arena-card__text">
+                    The shoe opens large in the center, moves into the right side on the first scroll,
+                    and then plays forward or backward only from your scroll direction.
+                  </p>
+                </div>
+                <div class="design-arena-card__cta">Open shoe scroll scene</div>
+              </div>
+            </button>
           </div>
         </div>
       </section>
+
+      <div class="design-arena-overlay" data-design-arena-overlay hidden aria-hidden="true">
+        <div class="design-arena-overlay__scroll" data-design-arena-scroll>
+          <button
+            class="design-arena-overlay__close clickable"
+            type="button"
+            data-design-arena-close
+            data-cursor-label="Close"
+            aria-label="Close shoe scroll scene"
+          >
+            &times;
+          </button>
+
+          <div class="design-arena-scene" data-design-arena-scene>
+            <div class="design-arena-scene__sticky">
+              <div class="design-arena-scene__wash"></div>
+              <div class="design-arena-scene__glow"></div>
+
+              <div class="design-arena-media" data-design-arena-media>
+                <div class="design-arena-media__shell" data-design-arena-surface>
+                  <img
+                    class="design-arena-media__fallback"
+                    data-design-arena-fallback
+                    src="assets/images/designarena-shoe-cutout.png"
+                    alt="Isolated shoe frame"
+                  />
+                  <canvas class="design-arena-media__canvas" data-design-arena-canvas></canvas>
+                </div>
+              </div>
+
+              <div class="design-arena-copy" data-design-arena-copy>
+                <p class="design-arena-copy__eyebrow">Choose section</p>
+                <h3 class="design-arena-copy__title">Scroll down to play. Scroll up to reverse.</h3>
+                <p class="design-arena-copy__text">
+                  The shoe starts large in the center, stays locked to the original frame, then
+                  slides into the right half while the explanation settles on the left.
+                </p>
+                <div class="design-arena-steps">
+                  <article class="design-arena-step">
+                    <strong>1. Click</strong>
+                    <span>The box opens with the isolated first shoe frame.</span>
+                  </article>
+                  <article class="design-arena-step">
+                    <strong>2. Shift</strong>
+                    <span>The opening scroll moves the shoe down and into the right side.</span>
+                  </article>
+                  <article class="design-arena-step">
+                    <strong>3. Scrub</strong>
+                    <span>Scrolling down advances the video, and scrolling up rewinds it.</span>
+                  </article>
+                </div>
+              </div>
+
+              <div class="design-arena-prompt" data-design-arena-prompt>
+                Scroll to shift, then scrub the shoe video
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <video
+          class="design-arena-video"
+          data-design-arena-video
+          muted
+          playsinline
+          preload="auto"
+          src="assets/designarena_video_gkt5c6pv.mp4"
+        ></video>
+      </div>
 
       <section class="section">
         <div class="shell">
