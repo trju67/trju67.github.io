@@ -829,29 +829,89 @@
     shell.classList.add("is-enabled");
     const dot = qs(".cursor-dot", shell);
     const label = qs(".cursor-dot span", shell);
+    let targetX = window.innerWidth / 2;
+    let targetY = window.innerHeight / 2;
+    let currentX = targetX;
+    let currentY = targetY;
+    let targetScale = 0.92;
+    let currentScale = targetScale;
+    let rafId = 0;
 
-    window.addEventListener("pointermove", (event) => {
-      dot.style.transform = `translate(${event.clientX}px, ${event.clientY}px) scale(1)`;
-    });
+    const animate = () => {
+      currentX += (targetX - currentX) * 0.22;
+      currentY += (targetY - currentY) * 0.22;
+      currentScale += (targetScale - currentScale) * 0.18;
 
-    window.addEventListener("pointerover", (event) => {
+      dot.style.left = `${currentX}px`;
+      dot.style.top = `${currentY}px`;
+      dot.style.transform = `translate3d(-50%, -50%, 0) scale(${currentScale})`;
+
+      if (
+        Math.abs(targetX - currentX) > 0.08 ||
+        Math.abs(targetY - currentY) > 0.08 ||
+        Math.abs(targetScale - currentScale) > 0.01
+      ) {
+        rafId = window.requestAnimationFrame(animate);
+      } else {
+        currentX = targetX;
+        currentY = targetY;
+        currentScale = targetScale;
+        dot.style.left = `${currentX}px`;
+        dot.style.top = `${currentY}px`;
+        dot.style.transform = `translate3d(-50%, -50%, 0) scale(${currentScale})`;
+        rafId = 0;
+      }
+    };
+
+    const queueFrame = () => {
+      if (!rafId) {
+        rafId = window.requestAnimationFrame(animate);
+      }
+    };
+
+    const updateCursorTarget = (event) => {
+      if (!(event.target instanceof Element)) {
+        dot.classList.remove("is-active");
+        label.textContent = "";
+        targetScale = 0.92;
+        return;
+      }
+
       const target = event.target.closest("[data-cursor-label], a, button, .clickable");
+
       if (!target) {
         dot.classList.remove("is-active");
         label.textContent = "";
+        targetScale = 0.92;
         return;
       }
 
       dot.classList.add("is-active");
       label.textContent = target.dataset.cursorLabel || "View";
+      targetScale = 1;
+    };
+
+    window.addEventListener("pointermove", (event) => {
+      targetX = event.clientX;
+      targetY = event.clientY;
+      dot.classList.add("is-visible");
+      updateCursorTarget(event);
+      queueFrame();
     });
 
-    window.addEventListener("pointerdown", () => {
-      dot.style.scale = "0.88";
+    window.addEventListener("pointerover", updateCursorTarget);
+
+    window.addEventListener("pointerleave", () => {
+      dot.classList.remove("is-visible", "is-active");
+      label.textContent = "";
+      targetScale = 0.92;
+      queueFrame();
     });
 
-    window.addEventListener("pointerup", () => {
-      dot.style.scale = "1";
+    window.addEventListener("blur", () => {
+      dot.classList.remove("is-visible", "is-active");
+      label.textContent = "";
+      targetScale = 0.92;
     });
   }
 
