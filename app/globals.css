@@ -1,87 +1,52 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #f6f2eb;
-  --surface: #fbf7f0;
-  --surface-strong: #1f1b17;
-  --foreground: #1b1917;
-  --muted: #6b655d;
-  --border: rgba(31, 27, 23, 0.12);
-  --accent: #b59a6a;
-  --accent-soft: #d8c4a2;
-}
+@layer base {
+  :root {
+    --cursor-size: 8px;
+    --cursor-hover-size: 48px;
+    --font-display: 'Equinox', 'Deltha', var(--font-syncopate), var(--font-michroma), var(--font-orbitron), system-ui, sans-serif;
+    --font-brand: 'Equinox', 'Deltha', var(--font-syncopate), var(--font-michroma), var(--font-orbitron), system-ui, sans-serif;
+    --font-body: var(--font-rajdhani), var(--font-inter), system-ui, sans-serif;
+  }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-surface: var(--surface);
-  --color-surface-strong: var(--surface-strong);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-border: var(--border);
-  --color-accent: var(--accent);
-  --color-accent-soft: var(--accent-soft);
-  --font-sans: var(--font-body);
-  --font-display: var(--font-display);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  background: var(--background);
-}
-
-body {
-  min-height: 100vh;
-  background:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.74), transparent 28%),
-    radial-gradient(circle at top right, rgba(181, 154, 106, 0.1), transparent 26%),
-    linear-gradient(180deg, #f8f4ee 0%, #f6f2eb 30%, #f3ede4 100%);
-  color: var(--foreground);
-  font-family: var(--font-body), sans-serif;
-}
-
-html[data-cursor="custom"] body,
-html[data-cursor="custom"] a,
-html[data-cursor="custom"] button {
-  cursor: none;
-}
-
-html[data-cursor="custom"] input,
-html[data-cursor="custom"] textarea {
-  cursor: text;
-}
-
-a,
-button,
-input {
-  transition:
-    color 0.2s ease,
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
-}
-
-::selection {
-  background: rgba(181, 154, 106, 0.28);
-  color: var(--foreground);
-}
-
-@media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
+  body {
+    @apply bg-aura-black text-aura-ivory antialiased;
+    font-family: var(--font-body);
+    cursor: none;
+  }
+
+  @media (pointer: coarse) {
+    body {
+      cursor: auto;
+    }
+  }
+
+  ::selection {
+    background: rgba(201, 176, 55, 0.3);
+    color: #f5f5f0;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 
+@layer components {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .luxury-hover {
+    @apply transition-all duration-500 ease-luxury;
+  }
+}

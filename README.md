@@ -1,73 +1,121 @@
-# Atelier Archive
+# AURA — Luxury Immersive Ecommerce
 
-A premium luxury shopping storefront for curated watches, fashion, shoes, fragrances, accessories, and exclusive bundles.
+## Project Overview
+A premium digital showroom built with Next.js, Three.js, and GSAP. 
+Features real-time 3D product visualization, smooth scroll animations, 
+custom cursor interactions, and a complete shopping cart system.
 
-## Primary Entry
-- Open [index.html](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/store/index.html) directly.
-- Additional pages:
-[collections.html](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/store/collections.html),
-[product.html](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/store/product.html),
-[cart.html](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/store/cart.html),
-[about.html](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/store/about.html)
-- The static storefront lives in the actual git repo root so GitHub Pages can publish it.
-- Real images should go in `assets/images/`. The site is already wired to use those files and falls back to neutral placeholders until you add them.
+## Tech Stack
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **3D:** Three.js, React Three Fiber, Drei
+- **Animation:** GSAP (ScrollTrigger), Framer Motion
+- **State:** Zustand
+- **Smooth Scroll:** Lenis
+- **Icons:** Lucide React
 
-## Stack Used
-- Plain HTML
-- CSS
-- Vanilla JavaScript
-- Local SVG artwork assets
-- Google Fonts for typography
-- Existing Next.js / React / TypeScript (`.tsx`) source remains in `app/`, `components/`, and `lib/`, but browsers load the static HTML/CSS/JS storefront directly.
+## How to Run
 
-## How To Run Locally
-- Open `index.html` directly in the browser.
-- Or serve the folder if you want local links under `http://` instead of `file://`.
+```bash
+# Install dependencies
+npm install
 
-## Folder Structure
-```text
-assets/
-  app.js
-  styles.css
-  images/
-  placeholders/
-  media/
-404/
-  index.html
-404.html
-about.html
-cart.html
-collections.html
-index.html
-product.html
-memory.md
-README.md
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
 ```
 
-## Design System Summary
-- Typography: `Cormorant Garamond` for editorial display and `Manrope` for body/UI text.
-- Palette: warm ivory backgrounds, charcoal ink text, translucent white surfaces, muted champagne accent.
-- Layout: large section spacing, image-first hierarchy, restrained surfaces, minimal visual noise.
+## Folder Structure
+```
+/app                 # Next.js app router pages
+  /page.tsx          # Homepage
+  /collection/page.tsx
+  /product/[slug]/page.tsx
+  /about/page.tsx
+  /layout.tsx
+  /globals.css
+/components
+  /3d                # Three.js scenes and models
+    Scene.tsx
+    Showroom.tsx
+    ProductModel.tsx
+    WatchModel.tsx
+    ShoeModel.tsx
+    ClothingModel.tsx
+    CologneModel.tsx
+    ElectronicsModel.tsx
+  /ui                # Interface components
+    Loader.tsx
+    Navbar.tsx
+    Footer.tsx
+    CustomCursor.tsx
+    CartDrawer.tsx
+    ProductCard.tsx
+    CategoryNav.tsx
+    FeaturedSection.tsx
+    ParallaxSection.tsx
+    ProductDetail.tsx
+/lib
+  store.ts           # Zustand cart store
+  animations.ts      # GSAP utilities
+  data.ts            # Product catalog
+  utils.ts           # Helpers
+/design-tokens.ts    # Design system constants
+```
 
-## Animation System Summary
-- First-load luxury intro overlay shown once per session.
-- Scroll reveal system for major sections and cards.
-- Subtle tilt interaction for hero/product media.
-- Minimal parallax in feature areas only.
-- Tasteful custom cursor on fine-pointer devices.
+## 3D Model Notes
+Current implementation uses procedural Three.js geometries styled to represent 
+each category. To use real GLTF models:
 
-## Page Overview
-- `index.html`: hero, curated categories, featured products, signature editorial section, trust messaging.
-- `collections.html`: searchable/filterable archive browse.
-- `product.html`: dynamic product detail page driven by query string data.
-- `cart.html`: local-storage bag review and quantity editing.
-- `about.html`: brand point of view and trust messaging.
-- `404.html` and `404/index.html`: static not-found pages for direct hosting and folder-based hosting.
+1. Place `.glb` files in `/public/models/`
+2. In the respective model component, replace the procedural group with:
+   ```tsx
+   import { useGLTF } from '@react-three/drei'
+   const { scene } = useGLTF('/models/watch.glb')
+   return <primitive object={scene} scale={1.5} />
+   ```
+3. Ensure models are optimized (Draco compression recommended).
+4. Update the fallback UI in `ProductModel.tsx` to match.
 
-## Notes On Performance And Accessibility
-- Motion is restrained and reduced automatically for users with reduced-motion preferences.
-- Cursor enhancement only runs on fine-pointer devices.
-- Layouts keep contrast high, buttons obvious, and product browsing clear.
+## Animation System
+- **GSAP ScrollTrigger:** Used for section reveals, parallax, and scroll-driven effects.
+- **Framer Motion:** Used for UI micro-interactions, page transitions, and hover states.
+- **R3F useFrame:** Used for continuous 3D animations (idle rotation, float).
+- **Lenis:** Provides smooth scroll interpolation (lerp: 0.1).
 
-## Additional Notes
-- [memory.md](C:/Users/junha_au6a0kj/Documents/GitHub/store-main/store/memory.md) remains the visual and UX source of truth.
+## Scroll-Controlled Watch Film
+The signature watch interaction lives in:
+
+```
+/lib/watch-product.ts
+/lib/watch-animation.ts
+/components/watch/WatchTile.tsx
+/components/watch/WatchDetailExperience.tsx
+/components/watch/ScrollControlledVideo.tsx
+/components/watch/ProductDescriptionTimeline.tsx
+/app/watch/[slug]/page.tsx
+```
+
+The homepage renders `WatchTile`, which opens `/watch/iced-roman-diamond-watch` with a short overlay transition. The detail route uses a sticky split layout: copy on the left, video on the right.
+
+`ScrollControlledVideo` does not rely on native reverse playback. It listens to GSAP `ScrollTrigger` progress, chooses the next or previous clean snap point, then uses `requestAnimationFrame` to ease `video.currentTime` toward that segment. This keeps the film moving to an intentional stopping point when the user stops scrolling, instead of freezing halfway through the animation.
+
+Expected media paths:
+
+```
+/public/media/iced-roman-watch-tile.svg
+/public/media/iced-roman-watch-assembly.mp4
+```
+
+To replace the temporary tile artwork with the exact provided still, save the watch image at `/public/media/iced-roman-watch-tile.jpg` and update `tileImageSrc` / `posterSrc` in `/lib/watch-product.ts`.
+
+## Performance Notes
+- Only one active R3F canvas per viewport section.
+- 3D models use `drei/Html` fallback for SSR.
+- Images are lazy-loaded with `next/image`.
+- Cart state is persisted to `localStorage`.
+- Reduced motion media query respected globally.
+- Touch devices use simplified 3D (static with subtle parallax).
