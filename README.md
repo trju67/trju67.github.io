@@ -92,25 +92,29 @@ The signature watch interaction lives in:
 ```
 /lib/watch-product.ts
 /lib/watch-animation.ts
+/lib/frame-sequence.ts
 /components/watch/WatchTile.tsx
 /components/watch/WatchDetailExperience.tsx
-/components/watch/ScrollControlledVideo.tsx
+/components/watch/ScrollImageSequence.tsx
 /components/watch/ProductDescriptionTimeline.tsx
 /app/watch/[slug]/page.tsx
 ```
 
-The homepage renders `WatchTile`, which opens `/watch/iced-roman-diamond-watch` with a short overlay transition. The detail route uses a sticky split layout: copy on the left, video on the right.
+The homepage renders `WatchTile`, which opens `/watch/iced-roman-diamond-watch` with a short overlay transition. The detail route uses a sticky split layout: copy on the left, image-sequence canvas on the right.
 
-`ScrollControlledVideo` does not rely on native reverse playback. It listens to GSAP `ScrollTrigger` progress, chooses the next or previous clean snap point, then uses `requestAnimationFrame` to ease `video.currentTime` toward that segment. This keeps the film moving to an intentional stopping point when the user stops scrolling, instead of freezing halfway through the animation.
+`ScrollImageSequence` preloads ordered PNG frames from `/public/media/watch-sequence/`, renders them to a high-DPI canvas, and listens to GSAP `ScrollTrigger` progress. Scroll progress sets a target frame, `requestAnimationFrame` eases the current frame toward it, and scroll idle snaps to clean keyframes. This keeps the product film responsive while scrolling and prevents the watch from stopping on awkward in-between frames.
 
 Expected media paths:
 
 ```
-/public/media/iced-roman-watch-tile.svg
-/public/media/iced-roman-watch-assembly.mp4
+/public/media/iced-roman-watch-tile.jpeg
+/public/media/watch-sequence/ezgif-frame-001.png
+/public/media/watch-sequence/ezgif-frame-002.png
+...
 ```
 
-To replace the temporary tile artwork with the exact provided still, save the watch image at `/public/media/iced-roman-watch-tile.jpg` and update `tileImageSrc` / `posterSrc` in `/lib/watch-product.ts`.
+The watch tile/poster image is copied from `store/media/image/Render_only_the_202604241302.jpeg` into `/public/media/iced-roman-watch-tile.jpeg` so both the Next app and the static fallback can serve it.
+The frame sequence is copied from `store/media/ezgif-63bf6f2cd4d28a68-png-split`.
 
 ## Performance Notes
 - Only one active R3F canvas per viewport section.

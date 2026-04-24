@@ -19,7 +19,14 @@ export const getSnapIndex = (target: number, snapPoints: number[]) => {
   return index >= 0 ? index : 0
 }
 
-export const approachProgress = (current: number, target: number) => {
+export const getNearestSnap = (progress: number, snapPoints: number[]) => {
+  const clamped = clampProgress(progress)
+  return snapPoints.reduce((nearest, point) => {
+    return Math.abs(point - clamped) < Math.abs(nearest - clamped) ? point : nearest
+  }, snapPoints[0])
+}
+
+export const approachProgress = (current: number, target: number, deltaMs = 16.67) => {
   const delta = target - current
   const distance = Math.abs(delta)
 
@@ -27,6 +34,7 @@ export const approachProgress = (current: number, target: number) => {
     return target
   }
 
-  const step = Math.max(distance * 0.09, 0.002)
+  const smoothing = 1 - Math.exp(-deltaMs / 150)
+  const step = Math.max(distance * smoothing, 0.0012)
   return current + Math.sign(delta) * Math.min(distance, step)
 }
