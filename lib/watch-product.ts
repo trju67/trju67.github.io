@@ -3,16 +3,19 @@ export interface WatchTimelineStage {
   title: string
   copy: string
   details: string[]
-  cta?: string
 }
 
 export interface WatchStoryProduct {
   slug: string
   name: string
   collection: string
+  price: number
   priceLabel: string
   tileImageSrc: string
-  videoSrc: string
+  frameSequence: {
+    frames: string[]
+    snapFrames: number[]
+  }
   posterSrc: string
   shortDescription: string
   specs: {
@@ -26,14 +29,23 @@ export interface WatchStoryProduct {
   snapPoints: number[]
 }
 
+const watchSequenceFrames = Array.from({ length: 8 }, (_, index) => {
+  const frameNumber = String(index + 1).padStart(3, '0')
+  return `/media/watch-sequence/ezgif-frame-${frameNumber}.png`
+})
+
 export const icedRomanDiamondWatch: WatchStoryProduct = {
   slug: 'iced-roman-diamond-watch',
   name: 'Iced Roman Diamond Watch',
   collection: 'Signature Jewelry Watch',
+  price: 18500,
   priceLabel: 'Availability on request',
-  tileImageSrc: '/media/iced-roman-watch-tile.svg',
-  videoSrc: '/media/iced-roman-watch-assembly.mp4',
-  posterSrc: '/media/iced-roman-watch-tile.svg',
+  tileImageSrc: '/media/iced-roman-watch-tile.jpeg',
+  frameSequence: {
+    frames: watchSequenceFrames,
+    snapFrames: [0, 2, 5, watchSequenceFrames.length - 1],
+  },
+  posterSrc: '/media/iced-roman-watch-tile.jpeg',
   shortDescription:
     'A fully iced luxury timepiece with a diamond-set bezel, Roman numeral dial, and polished gold-tone detailing.',
   specs: {
@@ -51,7 +63,6 @@ export const icedRomanDiamondWatch: WatchStoryProduct = {
       copy:
         'A fully iced timepiece designed to hold light with quiet authority. The case, bracelet, and dial are composed as one continuous field of brilliance.',
       details: ['Diamond-set bezel and case', 'Roman numeral dial', 'Gold-tone hands and markers'],
-      cta: 'View Details',
     },
     {
       eyebrow: 'Stage 02',
@@ -59,7 +70,6 @@ export const icedRomanDiamondWatch: WatchStoryProduct = {
       copy:
         'Scroll into the build and the watch separates with intention, revealing how each surface is layered, set, and brought back into alignment.',
       details: ['Pavé bracelet links', 'Polished gold-tone architecture', 'Two-tone jewelry-watch finish'],
-      cta: 'Add to Collection',
     },
     {
       eyebrow: 'Stage 03',
@@ -67,7 +77,6 @@ export const icedRomanDiamondWatch: WatchStoryProduct = {
       copy:
         'The bezel, dial, and case are treated as a single jewelry surface. Roman markers add contrast while the diamond field keeps the piece luminous.',
       details: ['Diamond-set dial', 'Stone-set bezel', 'Date aperture with framed window'],
-      cta: 'Request Availability',
     },
     {
       eyebrow: 'Stage 04',
@@ -75,7 +84,6 @@ export const icedRomanDiamondWatch: WatchStoryProduct = {
       copy:
         'The mechanism resolves into a complete statement: precise, polished, and built for presence without needing to announce itself.',
       details: ['Premium jewelry-watch styling', 'Balanced bracelet profile', 'Finished for formal and evening wear'],
-      cta: 'Request Availability',
     },
   ],
 }

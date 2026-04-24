@@ -38,11 +38,12 @@ The 3D experience should enhance discovery, not obstruct purchase intent.
 
 ## Signature Watch Scroll-Film Pattern
 - Premium product storytelling can use a sticky split layout: left side for copy and CTAs, right side for dominant product film.
-- Scroll-controlled product films must control `video.currentTime` directly instead of relying on native reverse playback.
-- Use clean snap points for segment ends. When the user stops scrolling, the video should continue easing to the nearest intended keyframe rather than freezing halfway.
+- Prefer canvas-rendered image sequences for precise product-film control when frame exports are available.
+- Scroll-controlled image sequences must preload frames, draw into a high-DPI canvas, and ease `currentFrame` toward `targetFrame` inside `requestAnimationFrame`.
+- Use clean snap frames for segment ends. When the user stops scrolling, the animation should continue easing to the nearest intended keyframe rather than freezing halfway.
 - Stage text should update from the selected snap target and animate with a calm fade/blur reveal.
 - Keep the watch visual dominant, dark, and uncluttered. Text should support the film, not compete with it.
-- Media path convention: `/public/media/{product-slug}-tile.*` and `/public/media/{product-slug}-assembly.mp4`.
+- Media path convention: `/public/media/{product-slug}-tile.*` and `/public/media/watch-sequence/{ordered-frame-name}.png`.
 
 ## 3D Interaction Rules
 - Models rotate slowly on idle (0.002–0.005 rad/frame).

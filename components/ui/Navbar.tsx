@@ -3,12 +3,16 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
 import { useCart } from '@/lib/store'
 import { Menu, X, ShoppingBag } from 'lucide-react'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [transitionHref, setTransitionHref] = useState<string | null>(null)
+  const router = useRouter()
+  const pathname = usePathname()
   const { toggleCart, totalItems } = useCart()
 
   useEffect(() => {
@@ -17,10 +21,33 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    if (!transitionHref) return
+
+    const timeout = window.setTimeout(() => {
+      if (pathname === transitionHref) {
+        setTransitionHref(null)
+      }
+    }, 1500)
+
+    return () => window.clearTimeout(timeout)
+  }, [pathname, transitionHref])
+
   const navLinks = [
     { href: '/collection', label: 'Collection' },
     { href: '/about', label: 'House' },
   ]
+
+  const navigateSmoothly = (href: string) => {
+    if (href === pathname || transitionHref) return
+
+    setMenuOpen(false)
+    setTransitionHref(href)
+
+    window.setTimeout(() => {
+      router.push(href)
+    }, 900)
+  }
 
   return (
     <>
@@ -33,19 +60,23 @@ export default function Navbar() {
         transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
       >
         <div className="max-w-[1800px] mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
-          <Link href="/" className="text-aura-ivory text-xl tracking-[0.3em] uppercase font-light">
+          <Link
+            href="/"
+            className="text-aura-ivory text-[0.8rem] leading-none tracking-[0.36em] uppercase font-normal [font-family:var(--font-brand)]"
+          >
             Aura
           </Link>
 
           <div className="hidden md:flex items-center gap-12">
             {navLinks.map((link) => (
-              <Link
+              <button
                 key={link.href}
-                href={link.href}
+                type="button"
+                onClick={() => navigateSmoothly(link.href)}
                 className="text-aura-ivory/70 text-xs tracking-luxury uppercase hover:text-aura-gold transition-colors duration-300"
               >
                 {link.label}
-              </Link>
+              </button>
             ))}
           </div>
 
@@ -88,15 +119,42 @@ export default function Navbar() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
               >
-                <Link
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
+                <button
+                  type="button"
+                  onClick={() => navigateSmoothly(link.href)}
                   className="text-aura-ivory text-2xl tracking-luxury uppercase"
                 >
                   {link.label}
-                </Link>
+                </button>
               </motion.div>
             ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {transitionHref && (
+          <motion.div
+            className="fixed inset-0 z-[90] bg-aura-black"
+            initial={{ y: '105%', opacity: 1 }}
+            animate={{ y: '0%', opacity: 1 }}
+            exit={{ y: '-105%', opacity: 0 }}
+            transition={{
+              duration: 1.12,
+              ease: [0.76, 0, 0.24, 1],
+              delay: transitionHref === pathname ? 1.5 : 0,
+            }}
+          >
+            <div className="flex h-full items-center justify-center">
+              <div className="text-center">
+                <p className="mb-5 text-[10px] uppercase tracking-[0.36em] text-aura-gold [font-family:var(--font-brand)]">
+                  Opening
+                </p>
+                <p className="text-3xl uppercase tracking-[0.28em] text-aura-ivory [font-family:var(--font-brand)]">
+                  {navLinks.find((link) => link.href === transitionHref)?.label}
+                </p>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

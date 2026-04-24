@@ -105,10 +105,6 @@
       inset: 0;
       background: radial-gradient(circle at 50% 35%, rgba(200, 168, 93, 0.13), transparent 34%), #090909;
       z-index: 10000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
@@ -118,23 +114,41 @@
     }
 
     .loader-brand {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scaleX(1.08);
+      transform-origin: left center;
       font-family: var(--font-brand);
       font-size: clamp(2.35rem, 6.6vw, 5.2rem);
+      line-height: 1;
       font-weight: 400;
       letter-spacing: 0.34em;
       text-transform: uppercase;
-      margin-bottom: 2rem;
       color: #ffffff;
       text-shadow: 0 0 35px rgba(200, 168, 93, 0.28);
+      transition:
+        top 1.05s cubic-bezier(0.76, 0, 0.24, 1),
+        left 1.05s cubic-bezier(0.76, 0, 0.24, 1),
+        transform 1.05s cubic-bezier(0.76, 0, 0.24, 1),
+        font-size 1.05s cubic-bezier(0.76, 0, 0.24, 1),
+        letter-spacing 1.05s cubic-bezier(0.76, 0, 0.24, 1);
+      white-space: nowrap;
     }
 
     .loader-bar {
       width: 200px;
       height: 2px;
       background: #2a2a2a;
-      position: relative;
+      position: absolute;
+      top: calc(50% + 3.2rem);
+      left: 50%;
+      transform: translateX(-50%);
       overflow: hidden;
       border-radius: 1px;
+      transition:
+        opacity 0.45s cubic-bezier(0.25, 1, 0.5, 1),
+        transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
     .loader-progress {
@@ -147,13 +161,41 @@
     }
 
     .loader-text {
-      margin-top: 1.5rem;
+      position: absolute;
+      top: calc(50% + 4.8rem);
+      left: 50%;
+      transform: translateX(-50%);
       font-size: 0.75rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: #c0c0c0;
       font-family: var(--font-brand);
       font-size: 0.62rem;
+      transition:
+        opacity 0.45s cubic-bezier(0.25, 1, 0.5, 1),
+        transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+      white-space: nowrap;
+    }
+
+    #loader.complete .loader-brand {
+      top: 2.1rem;
+      left: 3rem;
+      transform: translate(0, 0) scaleX(1.08);
+      font-size: 0.8rem;
+      line-height: 1;
+      letter-spacing: 0.36em;
+    }
+
+    #loader.complete .loader-bar,
+    #loader.complete .loader-text {
+      opacity: 0;
+      transform: translateX(-50%) translateY(14px);
+    }
+
+    @media (max-width: 767px) {
+      #loader.complete .loader-brand {
+        left: 1.5rem;
+      }
     }
 
     /* Navigation */
@@ -181,6 +223,7 @@
     .nav-brand {
       font-family: var(--font-brand);
       font-size: 0.8rem;
+      line-height: 1;
       font-weight: 400;
       letter-spacing: 0.36em;
       text-transform: uppercase;
@@ -1390,8 +1433,7 @@
     }
 
     .nav-brand,
-    .footer-brand,
-    .loader-brand {
+    .footer-brand {
       transform: scaleX(1.08);
       transform-origin: left center;
     }
@@ -1403,6 +1445,50 @@
 
     .footer-col a:hover {
       text-shadow: 0 0 8px rgba(200, 168, 93, 0.3);
+    }
+
+    .static-page-transition {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: var(--aura-black);
+      transform: translateY(105%);
+      opacity: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition:
+        transform 1.12s cubic-bezier(0.76, 0, 0.24, 1),
+        opacity 0.6s ease;
+    }
+
+    .static-page-transition.active {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .static-page-transition.leaving {
+      transform: translateY(-105%);
+      opacity: 0;
+    }
+
+    .static-page-transition p {
+      font-family: var(--font-brand);
+      font-size: clamp(1.4rem, 4vw, 3rem);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--aura-ivory);
+      text-align: center;
+    }
+
+    .static-page-transition span {
+      display: block;
+      margin-bottom: 1rem;
+      font-size: 0.58rem;
+      letter-spacing: 0.36em;
+      color: var(--aura-gold);
     }
 
     /* Static watch feature fallback */
@@ -1634,19 +1720,72 @@
       position: relative;
     }
 
-    .watch-video-frame video {
+    .watch-video-frame canvas,
+    .watch-video-frame img {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      display: block;
+    }
+
+    .watch-sequence-poster {
+      position: absolute;
+      inset: 0;
+      transition: opacity 0.7s;
+    }
+
+    .watch-sequence-loader {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(10px);
+      transition: opacity 0.5s;
+    }
+
+    .watch-sequence-loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .watch-sequence-loader p {
+      font-family: var(--font-brand);
+      font-size: 0.58rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--aura-gold);
+      margin-bottom: 1rem;
+    }
+
+    .watch-sequence-bar {
+      width: 220px;
+      height: 1px;
+      background: rgba(248,244,234,0.14);
+      overflow: hidden;
+    }
+
+    .watch-sequence-bar span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: var(--aura-gold);
+      transition: width 0.25s;
     }
 
     .watch-close-btn {
       position: fixed;
       z-index: 40;
-      top: 1.5rem;
-      left: 1.5rem;
+      top: 5.75rem;
+      right: 3rem;
+      left: auto;
       background: rgba(0,0,0,0.45);
       backdrop-filter: blur(12px);
+      max-width: calc(100vw - 6rem);
+      white-space: nowrap;
     }
 
     @media (max-width: 900px) {
@@ -1667,12 +1806,22 @@
       .watch-story-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
-        padding: 6rem 1.5rem 2rem;
+        padding: 8rem 1.5rem 2rem;
       }
 
       .watch-video-frame {
         height: 44vh;
         order: -1;
+      }
+
+      .watch-close-btn {
+        top: 5.5rem;
+        right: 1.5rem;
+        left: auto;
+        max-width: calc(100vw - 3rem);
+        padding: 0.78rem 1rem;
+        font-size: 0.5rem;
+        letter-spacing: 0.16em;
       }
     }
   </style>
@@ -1713,6 +1862,10 @@
       </button>
     </div>
   </nav>
+
+  <div class="static-page-transition" id="static-page-transition">
+    <p><span>Opening</span><strong id="static-page-transition-label">Collection</strong></p>
+  </div>
 
   <!-- Mobile Menu -->
   <div id="mobile-menu">
@@ -1817,7 +1970,7 @@
         <p class="watch-feature-kicker fade-up">Signature Interaction</p>
         <h2 class="watch-feature-heading fade-up stagger-1">Iced Roman Watch Film</h2>
         <a href="#" class="watch-tile-static fade-up stagger-2" onclick="openWatchExperience(); return false;" data-cursor="Open">
-          <img src="public/media/iced-roman-watch-tile.svg" alt="Iced Roman Diamond Watch">
+          <img src="public/media/iced-roman-watch-tile.jpeg" alt="Iced Roman Diamond Watch">
           <div class="watch-tile-copy">
             <p class="watch-feature-kicker">Interactive Watch Story</p>
             <h3>Iced Roman Diamond Watch</h3>
@@ -1902,13 +2055,18 @@
             <span>Gold-tone hands and markers</span>
           </div>
           <div class="watch-detail-actions">
-            <button>Request Availability</button>
-            <button>Add to Collection</button>
+            <button onclick="addWatchToBag()">Add to Bag</button>
+            <button onclick="viewWatchDetails()">View Details</button>
           </div>
         </div>
 
         <div class="watch-video-frame">
-          <video id="watch-scroll-video" src="public/media/iced-roman-watch-assembly.mp4" poster="public/media/iced-roman-watch-tile.svg" muted playsinline preload="metadata"></video>
+          <img class="watch-sequence-poster" id="watch-sequence-poster" src="public/media/iced-roman-watch-tile.jpeg" alt="">
+          <canvas id="watch-sequence-canvas" aria-label="Scroll controlled watch animation"></canvas>
+          <div class="watch-sequence-loader" id="watch-sequence-loader">
+            <p>Preparing watch sequence</p>
+            <div class="watch-sequence-bar"><span id="watch-sequence-progress"></span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -2188,10 +2346,11 @@ const loaderInterval = setInterval(() => {
   if (loadProgress >= 100) {
     loadProgress = 100;
     clearInterval(loaderInterval);
+    document.getElementById('loader').classList.add('complete');
     setTimeout(() => {
       document.getElementById('loader').classList.add('hidden');
       initHeroAnimations();
-    }, 500);
+    }, 1300);
   }
   loaderProgress.style.width = Math.min(loadProgress, 100) + '%';
 }, 200);
@@ -2646,7 +2805,7 @@ function renderProductCard(product, index) {
 function renderCategoryCard(cat, index) {
   return `
     <div class="fade-up stagger-${Math.min(index + 1, 5)}">
-      <a href="#" class="category-card" data-cursor="Explore" onclick="showCollection(); filterCollection('${cat.slug}'); return false;">
+      <a href="#" class="category-card" data-cursor="Explore" onclick="showCollection('${cat.slug}'); return false;">
         <div class="category-card-content">
           <h3>${cat.name}</h3>
           <p>${cat.count} Pieces</p>
@@ -2662,13 +2821,38 @@ document.getElementById('featured-grid').innerHTML = products.filter(p => p.isFe
 document.getElementById('new-arrivals-grid').innerHTML = products.filter(p => p.isNew).map((p, i) => renderProductCard(p, i)).join('');
 
 // ===================== COLLECTION PAGE =====================
-function showCollection() {
+function runStaticPageTransition(label, callback) {
+  const overlay = document.getElementById('static-page-transition');
+  const labelEl = document.getElementById('static-page-transition-label');
+  labelEl.textContent = label;
+  overlay.classList.remove('leaving');
+  overlay.classList.add('active');
+
+  setTimeout(() => {
+    callback();
+  }, 900);
+
+  setTimeout(() => {
+    overlay.classList.add('leaving');
+    overlay.classList.remove('active');
+  }, 2400);
+
+  setTimeout(() => {
+    overlay.classList.remove('leaving');
+  }, 3600);
+}
+
+function showCollection(filter = 'all') {
+  runStaticPageTransition('Collection', () => showCollectionImmediate(filter));
+}
+
+function showCollectionImmediate(filter = 'all') {
   document.getElementById('main-content').style.display = 'none';
   document.getElementById('home-footer').style.display = 'none';
   document.getElementById('collection-page').style.display = 'block';
   document.getElementById('about-page').style.display = 'none';
   window.scrollTo(0, 0);
-  renderCollection('all');
+  renderCollection(filter);
 }
 
 function renderCollection(filter) {
@@ -2695,6 +2879,10 @@ function filterCollection(cat) {
 
 // ===================== ABOUT PAGE =====================
 function showAbout() {
+  runStaticPageTransition('House', showAboutImmediate);
+}
+
+function showAboutImmediate() {
   document.getElementById('main-content').style.display = 'none';
   document.getElementById('home-footer').style.display = 'none';
   document.getElementById('collection-page').style.display = 'none';
@@ -2709,6 +2897,10 @@ function showAbout() {
 }
 
 function showHome() {
+  runStaticPageTransition('Aura', showHomeImmediate);
+}
+
+function showHomeImmediate() {
   document.getElementById('main-content').style.display = 'block';
   document.getElementById('home-footer').style.display = 'block';
   document.getElementById('collection-page').style.display = 'none';
@@ -2902,13 +3094,25 @@ const watchStages = [
   }
 ];
 
-const watchSnapPoints = [0, 0.34, 0.68, 1];
-let watchCurrentProgress = 0;
-let watchTargetProgress = 0;
+const watchFramePaths = Array.from({ length: 8 }, (_, index) => `public/media/watch-sequence/ezgif-frame-${String(index + 1).padStart(3, '0')}.png`);
+const watchSnapFrames = [0, 2, 5, 7];
+const watchCartProduct = {
+  id: 'iced-roman-diamond-watch',
+  name: 'Iced Roman Diamond Watch',
+  category: 'watches',
+  price: 18500,
+  size: null
+};
+let watchImages = [];
+let watchLoadedFrames = 0;
+let watchCurrentFrame = 0;
+let watchTargetFrame = 0;
 let watchLastRawProgress = 0;
-let watchDuration = 0;
 let watchStageIndex = 0;
 let watchRaf = null;
+let watchIdleTimer = null;
+let watchLastFrameTime = 0;
+let watchRenderedFrame = -1;
 
 function openWatchExperience() {
   document.getElementById('main-content').style.display = 'none';
@@ -2917,17 +3121,14 @@ function openWatchExperience() {
   document.getElementById('watch-experience-page').classList.add('open');
   window.scrollTo(0, 0);
 
-  const video = document.getElementById('watch-scroll-video');
-  video.muted = true;
-  video.controls = false;
-  if (video.readyState >= 1) {
-    watchDuration = video.duration || 0;
-  }
-
   setWatchStage(0);
-  watchCurrentProgress = 0;
-  watchTargetProgress = 0;
+  watchCurrentFrame = 0;
+  watchTargetFrame = 0;
   watchLastRawProgress = 0;
+  watchLastFrameTime = 0;
+  watchRenderedFrame = -1;
+  setupWatchCanvas();
+  preloadWatchFrames();
   startWatchLoop();
 }
 
@@ -2935,8 +3136,28 @@ function closeWatchExperience() {
   document.getElementById('watch-experience-page').classList.remove('open');
   document.getElementById('main-content').style.display = '';
   if (watchRaf) cancelAnimationFrame(watchRaf);
+  if (watchIdleTimer) clearTimeout(watchIdleTimer);
   watchRaf = null;
+  watchIdleTimer = null;
   window.scrollTo(0, 0);
+}
+
+function addWatchToBag() {
+  const existing = cart.find(item => item.id === watchCartProduct.id);
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    cart.push({ ...watchCartProduct, quantity: 1 });
+  }
+  saveCart();
+  toggleCart();
+}
+
+function viewWatchDetails() {
+  const details = document.getElementById('watch-stage-details');
+  if (details) {
+    details.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 
 function setWatchStage(index) {
@@ -2968,11 +3189,11 @@ function setWatchStage(index) {
 }
 
 function getWatchDirectionalSnap(progress, direction) {
-  const clamped = Math.min(1, Math.max(0, progress));
+  const frame = Math.min(watchFramePaths.length - 1, Math.max(0, progress * (watchFramePaths.length - 1)));
   if (direction > 0) {
-    return watchSnapPoints.find(point => point >= clamped + 0.01) || 1;
+    return watchSnapFrames.find(point => point >= frame + 0.35) || watchSnapFrames[watchSnapFrames.length - 1];
   }
-  return [...watchSnapPoints].reverse().find(point => point <= clamped - 0.01) || 0;
+  return [...watchSnapFrames].reverse().find(point => point <= frame - 0.35) || watchSnapFrames[0];
 }
 
 function syncWatchScrollTarget() {
@@ -2981,41 +3202,111 @@ function syncWatchScrollTarget() {
   const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
   const rawProgress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
   const delta = rawProgress - watchLastRawProgress;
+  const rawFrame = rawProgress * (watchFramePaths.length - 1);
 
-  if (Math.abs(delta) > 0.003) {
+  if (Math.abs(delta) > 0.001) {
     const direction = delta > 0 ? 1 : -1;
-    const target = getWatchDirectionalSnap(rawProgress, direction);
-    watchTargetProgress = target;
-    const stageIndex = watchSnapPoints.findIndex(point => Math.abs(point - target) < 0.001);
+    const cleanStop = getWatchDirectionalSnap(rawProgress, direction);
+    watchTargetFrame = rawFrame;
+    const stageIndex = watchSnapFrames.findIndex(point => Math.abs(point - cleanStop) < 0.001);
     setWatchStage(stageIndex >= 0 ? stageIndex : 0);
+
+    if (watchIdleTimer) clearTimeout(watchIdleTimer);
+    watchIdleTimer = setTimeout(() => {
+      watchTargetFrame = cleanStop;
+    }, 140);
   }
 
   watchLastRawProgress = rawProgress;
 }
 
+function setupWatchCanvas() {
+  const canvas = document.getElementById('watch-sequence-canvas');
+  if (!canvas) return;
+  const rect = canvas.getBoundingClientRect();
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.max(1, Math.round(rect.width * ratio));
+  canvas.height = Math.max(1, Math.round(rect.height * ratio));
+  const context = canvas.getContext('2d');
+  context.setTransform(ratio, 0, 0, ratio, 0, 0);
+}
+
+function preloadWatchFrames() {
+  if (watchImages.length === watchFramePaths.length) {
+    document.getElementById('watch-sequence-loader').classList.add('hidden');
+    drawWatchFrame(0);
+    return;
+  }
+
+  watchImages = [];
+  watchLoadedFrames = 0;
+  const progress = document.getElementById('watch-sequence-progress');
+  const loader = document.getElementById('watch-sequence-loader');
+  loader.classList.remove('hidden');
+
+  watchFramePaths.forEach((src, index) => {
+    const image = new Image();
+    image.onload = () => {
+      watchImages[index] = image;
+      watchLoadedFrames += 1;
+      progress.style.width = `${Math.round((watchLoadedFrames / watchFramePaths.length) * 100)}%`;
+      if (watchLoadedFrames === watchFramePaths.length) {
+        loader.classList.add('hidden');
+        document.getElementById('watch-sequence-poster').style.opacity = '0';
+        drawWatchFrame(0);
+      }
+    };
+    image.src = src;
+  });
+}
+
+function drawWatchFrame(frameIndex) {
+  const canvas = document.getElementById('watch-sequence-canvas');
+  const image = watchImages[frameIndex];
+  if (!canvas || !image) return;
+
+  const context = canvas.getContext('2d');
+  const rect = canvas.getBoundingClientRect();
+  const canvasWidth = rect.width;
+  const canvasHeight = rect.height;
+  const imageRatio = image.width / image.height;
+  const canvasRatio = canvasWidth / canvasHeight;
+  let drawWidth = canvasWidth;
+  let drawHeight = canvasHeight;
+
+  if (imageRatio > canvasRatio) {
+    drawHeight = canvasWidth / imageRatio;
+  } else {
+    drawWidth = canvasHeight * imageRatio;
+  }
+
+  const x = (canvasWidth - drawWidth) / 2;
+  const y = (canvasHeight - drawHeight) / 2;
+  context.fillStyle = '#000';
+  context.fillRect(0, 0, canvasWidth, canvasHeight);
+  context.drawImage(image, x, y, drawWidth, drawHeight);
+}
+
 function startWatchLoop() {
   if (watchRaf) cancelAnimationFrame(watchRaf);
 
-  const video = document.getElementById('watch-scroll-video');
-  const tick = () => {
+  const tick = (time) => {
     if (!document.getElementById('watch-experience-page').classList.contains('open')) return;
 
-    if (!watchDuration && video.duration) {
-      watchDuration = video.duration;
-    }
-
-    const delta = watchTargetProgress - watchCurrentProgress;
-    if (Math.abs(delta) < 0.0008) {
-      watchCurrentProgress = watchTargetProgress;
+    const delta = watchTargetFrame - watchCurrentFrame;
+    if (Math.abs(delta) < 0.015) {
+      watchCurrentFrame = watchTargetFrame;
     } else {
-      const step = Math.max(Math.abs(delta) * 0.09, 0.002);
-      watchCurrentProgress += Math.sign(delta) * Math.min(Math.abs(delta), step);
+      const deltaMs = watchLastFrameTime ? Math.min(48, Math.max(8, time - watchLastFrameTime)) : 16.67;
+      const smoothing = 1 - Math.exp(-deltaMs / 130);
+      watchCurrentFrame += delta * smoothing;
     }
+    watchLastFrameTime = time;
 
-    if (watchDuration) {
-      try {
-        video.currentTime = watchCurrentProgress * watchDuration;
-      } catch (error) {}
+    const frame = Math.max(0, Math.min(watchFramePaths.length - 1, Math.round(watchCurrentFrame)));
+    if (frame !== watchRenderedFrame) {
+      watchRenderedFrame = frame;
+      drawWatchFrame(frame);
     }
 
     watchRaf = requestAnimationFrame(tick);
@@ -3025,13 +3316,7 @@ function startWatchLoop() {
 }
 
 window.addEventListener('scroll', syncWatchScrollTarget);
-
-const watchVideoEl = document.getElementById('watch-scroll-video');
-if (watchVideoEl) {
-  watchVideoEl.addEventListener('loadedmetadata', () => {
-    watchDuration = watchVideoEl.duration || 0;
-  });
-}
+window.addEventListener('resize', setupWatchCanvas);
 
 // ===================== SCROLL ANIMATIONS =====================
 function initHeroAnimations() {

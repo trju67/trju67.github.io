@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowLeft } from 'lucide-react'
 import ProductDescriptionTimeline from '@/components/watch/ProductDescriptionTimeline'
-import ScrollControlledVideo from '@/components/watch/ScrollControlledVideo'
+import ScrollImageSequence from '@/components/watch/ScrollImageSequence'
 import { WatchStoryProduct } from '@/lib/watch-product'
 
 interface WatchDetailExperienceProps {
@@ -34,12 +34,12 @@ export default function WatchDetailExperience({ product }: WatchDetailExperience
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_76%_44%,rgba(201,176,55,0.17),transparent_30%),linear-gradient(120deg,rgba(255,255,255,0.045),transparent_32%,rgba(201,176,55,0.08)_78%,transparent)]" />
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#050505_0%,rgba(5,5,5,0.94)_37%,rgba(5,5,5,0.2)_100%)]" />
 
-          <div className="relative z-10 grid min-h-screen grid-cols-1 px-6 pb-14 pt-24 lg:grid-cols-[0.88fr_1.12fr] lg:gap-10 lg:px-12 lg:pb-10">
+          <div className="relative z-10 grid min-h-screen grid-cols-1 px-6 pb-14 pt-28 lg:grid-cols-[0.88fr_1.12fr] lg:gap-10 lg:px-12 lg:pb-10 lg:pt-32">
             <div className="relative z-20">
               <Link
                 href="/"
                 data-cursor="Back"
-                className="mb-8 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.26em] text-aura-gray transition duration-500 hover:text-aura-gold [font-family:var(--font-brand)]"
+                className="mb-2 inline-flex items-center gap-3 rounded-full border border-aura-ivory/10 bg-black/35 px-5 py-3 text-[10px] uppercase tracking-[0.22em] text-aura-gray backdrop-blur transition duration-500 hover:border-aura-gold/40 hover:text-aura-gold [font-family:var(--font-brand)]"
               >
                 <ArrowLeft size={14} strokeWidth={1.4} />
                 Back to showroom
@@ -55,11 +55,11 @@ export default function WatchDetailExperience({ product }: WatchDetailExperience
               className="relative z-10 flex min-h-[54vh] items-center lg:min-h-0"
             >
               <div className="h-[58vh] w-full lg:h-[82vh]">
-                <ScrollControlledVideo
-                  src={product.videoSrc}
+                <ScrollImageSequence
+                  frames={product.frameSequence.frames}
+                  snapFrames={product.frameSequence.snapFrames}
                   poster={product.posterSrc}
                   triggerRef={sectionRef}
-                  snapPoints={product.snapPoints}
                   onStageChange={handleStageChange}
                 />
               </div>
